@@ -1,0 +1,34 @@
+iframe {
+    border: 1px solid #00ff37;
+    background-color: white;
+    width: 90%;
+    display: block;
+    margin: auto;
+    min-height: 300px;
+}
+
+.dark {
+    background-color: #152028;
+    color: white;
+}
+
+pre {
+    font-size: 1.5em;
+    overflow-x: scroll;
+    text-align: left;
+}
+
+.vuln-input {
+    background-color: rgb(214, 214, 59);
+    color: black;
+}
+
+
+p {
+    font-size: 1.25em;
+}
+
+.instructions {
+    width: 80%;
+    margin: auto;
+}

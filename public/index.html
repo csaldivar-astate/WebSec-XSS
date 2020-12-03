@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class='dark'>
+    <div class="instructions">
+        <p>
+            First thing's first, let's go over how this works. You'll see an embedded website on this page. That's called an <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe">iframe</a>. That's the vulnerable site you're going to be attacking. The iframe is the registration page. Just like the one we used in class. The HTML you see below is for the account page we used in class. This site will allow you to type into the registration input fields and see the affect you'll have on the corresponding account page as you're typing. 
+        </p>
+        <p>
+            Go ahead and type into the username field and you'll see the html change as you type. Hopefully, this will make understanding how XSS injections work. You can see exactly how your input will modify the resulting html.
+        </p>
+    </div>
+<div>
+<pre id='htmlCode'>
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="UTF-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;title&gt;<span id="vuln_username" class='vuln-input'>username</span>'s Account Page&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;<span id="vuln_username" class='vuln-input'>username</span>&lt;/h1&gt;
+        &lt;p&gt;
+            Email: <span id="vuln_email" class='vuln-input'>email</span>
+            &lt;br&gt;
+            Role: user
+        &lt;p&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+</pre>
+</div>
+
+    
+    <iframe src="http://127.0.0.1:9000" frameborder="0"></iframe>
+
+
+</body>
+
+<script>
+    window.addEventListener('message', event => {
+        const {username, email} = JSON.parse(event.data);
+        Array.from(document.querySelectorAll('#vuln_username')).map(el => el.textContent = username || "username")
+        Array.from(document.querySelectorAll('#vuln_email')).map(el => el.textContent = email || "email")
+    })
+</script>
+</html>
