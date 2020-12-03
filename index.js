@@ -25,25 +25,19 @@ app.listen(8000, () => {
 
 function createServer (port) {
     const app = express();
-
     const router = new express.Router();
 
-    router.use(async (req, res, next) => {
+    router.use((req, res, next) => {
         res.set('X-XSS-Protection', '0');
         next();
     });
 
-    // parse application/x-www-form-urlencoded
     router.use(express.urlencoded({ extended: false }));
-
-    // parse application/json
     router.use(express.json());
 
     app.use(router);
 
-    app.listen(port, () => {
-        console.log(`Listening on: 127.0.0.1:${port}`)
-    });
+    app.listen(port);
 
     return router;
 }
