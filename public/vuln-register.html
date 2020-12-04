@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register</h1>
+    <form id="registerForm" method="post" action="/user">
+        <div>
+            <input type="text" id="username" placeholder="Username" name="username" oninput="sendInput()">
+        </div>
+        <div>
+            <input id="email" style="height: 150px; width: 250px;" id="email" type="text" placeholder="Email" name="email" oninput="sendInput()">
+        </div>
+        <input type="text" placeholder="password" name="password" id="password"><br>
+
+        <button type="submit">Submit</button>
+
+    </form>
+</body>
+<script>
+    function sendInput () {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        window.parent.postMessage(JSON.stringify({username, email}), '*');
+    }
+</script>
+</html>

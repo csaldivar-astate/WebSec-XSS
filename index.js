@@ -15,7 +15,7 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join('public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(8000, () => {
@@ -45,32 +45,5 @@ function createServer (port) {
 const vulnRouter = createServer(9000);
 
 vulnRouter.get('/', (req, res) => {
-    res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register</title>
-    </head>
-    <body>
-        
-        <form id="registerForm" method="post" action="/user">
-            <input type="text" id="username" placeholder="Username" name="username" oninput="sendInput()"><br>
-            <input id="email" style="height: 150px; width: 250px;" id="email" type="text" placeholder="Email" name="email" oninput="sendInput()"><br>
-            <input type="text" placeholder="password" name="password" id="password"><br>
-    
-            <button type="submit">Submit</button>
-    
-        </form>
-    </body>
-    <script>
-        function sendInput () {
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            window.parent.postMessage(JSON.stringify({username, email}), '*');
-        }
-    </script>
-    </html>
-    `)
+    res.sendFile(path.join(__dirname, 'public', 'vuln-register.html'));
 });
