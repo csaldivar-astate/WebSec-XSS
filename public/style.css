@@ -12,10 +12,25 @@ iframe {
     color: white;
 }
 
+.codeWrapper {
+    background-color: #152028;
+    text-align: center;
+}
+
 pre {
     font-size: 1.5em;
-    overflow-x: scroll;
     text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #272822;
+    display: inline-block;
+    text-align: left;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.code {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
 }
 
 .vuln-input {
@@ -26,9 +41,12 @@ pre {
 
 p {
     font-size: 1.25em;
+    line-height: 1.3em;
+    margin: 1.3em 0;
 }
 
 .instructions {
     width: 80%;
     margin: auto;
+    font-family: 'Courier New', Courier, monospace;
 }
