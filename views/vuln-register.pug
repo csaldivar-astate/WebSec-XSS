@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    script(src="/sendToParent.js")
 </head>
 <body>
     <h1>Register</h1>
-    <form id="registerForm" method="post" action="/register">
+    <form id="registerForm" method="post" action="/register_#{stage}">
         <div>
             <input type="text" id="username" placeholder="Username" name="username" oninput="sendInput()">
         </div>
@@ -20,11 +21,4 @@
 
     </form>
 </body>
-<script>
-    function sendInput () {
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        window.parent.postMessage(JSON.stringify({username, email}), '*');
-    }
-</script>
 </html>

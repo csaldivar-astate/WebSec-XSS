@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Tags</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class='dark'>
+    <div class="instructions">
+        <h1>Using Script Tags</h1>
+        <p>
+            Ok, so let's start review. The web brings together many different technologies which is why it has lasted as long as it has. It's what I lovingly refer to as a hodgepodge of shit. But it's <em>our</em> hodgepodge of shit and that's what makes it special... It's also what makes it so insecure. All of that tech was pretty much cobbled together over the years and many of it was cobbled together when people weren't thinking about security or hacking. 
+        </p>
+        <p>
+            So when we're developing on the web, we need to be aware of these different types of technologies. Particularly when defending against cross-site scripting attacks (XSS). Recall that XSS attacks are a type of injection attack. That is user input is being treated as code somewhere in out app/website. Obviously that's bad. And obviously we know better than to use user input as code so we're safe right? Nope, XSS attacks usually occur because we don't realize the way we're handling user input is vulnerable to an injection attack. 
+        </p>
+        <p>
+            We have to be aware of all of the different places that user input can end up. We call these "contexts". The contexts we'll look at include:
+            <ul>
+                <li>HTML Elements</li>
+                <li>HTML Attributes</li>
+                <li>URL</li>
+                <li>CSS</li>
+                <li>Javascript</li>
+            </ul>
+        </p>
+        <p>
+            The core problem is that each of these contexts uses different encoding rules/syntax. ie they all have special character but they <strong><em>different</em></strong> special characters and they are escaped differently. We have to be careful how we encoded user input and where it's going to end up. A particular string could be completely benign when used in one context but it could also enable an XSS attack in a different context.
+        </p>
+        <p>
+            Whether user input ends up in any of these places is dependent on the app/site. XSS (and injection attacks in general) are very targeted attacks* and the injection strings are crafted to what they're attacking.
+        </p>
+        <p>
+            So let's look at how we can get XSS injections in these different contexts.
+        </p>
+
+        <p>
+            *These are targeted attacks but there are polyglot strings. These are carefully crafted strings that work in a variety of contexts.
+        </p>
+
+        <h1>Context: HTML Elements</h1>
+        <p>
+            So we can see the HTML code below is generated dynamically using user input in three places. It uses the user's <strong class="highlight">username</strong> and <strong class="highlight">email</strong>. We also know that this HTML page is accessed at the path <span class="code highlight">/user/:username</span>.
+        </p>
+
+        <p>
+            So using this information we can tell that user input is being inserted into the following contexts:
+
+            <ul>
+                <li>HTML Elements</li>
+                <li>URL</li>
+            </ul>
+        </p>
+
+        <p>
+            We know it's being inserted as HTML Elements because the user input is put straight into the HTML document. This is pretty much XSS easy mode.
+        </p>
+
+        <p>
+            We know it's being inserted in a URL context because well...the username is literally used in the URL. But let's look at the HTML Element attack first.
+        </p>
+
+        <p>
+            So should we inject with the <span class="highlight">username</span> or <span class="highlight">email</span> first? Well to get to the profile page we'll need to enter the username in the URL which means it'll be encoded in some way. If we use the username we'll have to be careful so that the string we're injecting doesn't mess up when we try to access the URL. So instead of bothering with all that nonsense let's just use the email since it's only being used in an HTML context.
+        </p>
+
+        <p>
+            Well if we want to run javascript in HTML we just use a <span class="code">script</span> HTML element. So let's just inject that. Type <span class="code">&lt;script&gt;alert("XSS");&lt;/script&gt;</span>
+        </p>
+
+        <p>
+            Notice how the resulting html now has a <span class="code">script</span> tag embedded in it.
+        </p>
+    </div>
+<div class="codeWrapper">
+<pre id='htmlCode'>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;<span id="vuln_username" class='highlight'>${user.username}</span>'s Profile Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;<span id="vuln_username" class='highlight'>${user.username}</span>&lt;/h1&gt;
+    &lt;p&gt;
+        Email: <span id="vuln_email" class='highlight'>${user.email}</span>
+        &lt;br&gt;
+        Role: user
+    &lt;p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+    <iframe src="http://localhost:9000/register_three" frameborder="0"></iframe>
+    <div class="instructions">
+        <p>Once you're done messing with this continue to the next page <button id="next">Next</button></p>
+    </div>
+</body>
+
+<script>
+    document.getElementById("next").addEventListener("click", (event) => {
+        window.location.href = "/part-three";
+    });
+    window.addEventListener('message', event => {
+        const {username, email} = JSON.parse(event.data);
+        Array.from(document.querySelectorAll('#vuln_username')).map(el => el.textContent = username || "${user.username}")
+        Array.from(document.querySelectorAll('#vuln_email')).map(el => el.textContent = email || "${user.email}")
+    })
+</script>
+</html>

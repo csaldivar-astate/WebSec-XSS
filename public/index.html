@@ -27,12 +27,12 @@
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
     &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;<span id="vuln_username" class='vuln-input'>${user.username}</span>'s Profile Page&lt;/title&gt;
+    &lt;title&gt;<span id="vuln_username" class='highlight'>${user.username}</span>'s Profile Page&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    &lt;h1&gt;<span id="vuln_username" class='vuln-input'>${user.username}</span>&lt;/h1&gt;
+    &lt;h1&gt;<span id="vuln_username" class='highlight'>${user.username}</span>&lt;/h1&gt;
     &lt;p&gt;
-        Email: <span id="vuln_email" class='vuln-input'>${user.email}</span>
+        Email: <span id="vuln_email" class='highlight'>${user.email}</span>
         &lt;br&gt;
         Role: user
     &lt;p&gt;
@@ -40,14 +40,18 @@
 &lt;/html&gt;
 </pre>
 </div>
-
-    
-    <iframe src="http://127.0.0.1:9000" frameborder="0"></iframe>
-
+<iframe src="http://localhost:9000/register_one" frameborder="0"></iframe>
+        
+        <div class="instructions">
+            <p>Once you're done messing with this continue to the next page <button id="next">Next</button></p>
+        </div>
 
 </body>
 
 <script>
+    document.getElementById("next").addEventListener("click", (event) => {
+        window.location.href = "/part-two";
+    });
     window.addEventListener('message', event => {
         const {username, email} = JSON.parse(event.data);
         Array.from(document.querySelectorAll('#vuln_username')).map(el => el.textContent = username || "${user.username}")

@@ -18,32 +18,51 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/part-two', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'zwei.html'));
+});
+
+app.get('/part-three', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'drei.html'));
+});
+
 app.listen(8000, () => {
     console.log('Server listening on 127.0.0.1:8000');
 });
 
+// Init the vulnerable server
+const msngr = express();
 
-function createServer (port) {
-    const app = express();
-    const router = new express.Router();
+msngr.set("view engine", "pug");
+msngr.set("views", path.join(__dirname, "views"));
+msngr.use(express.static('public'));
 
-    router.use((req, res, next) => {
-        res.set('X-XSS-Protection', '0');
-        next();
+msngr.use((req, res, next) => {
+    // Don't let the browser mess with our XSS attempts
+    res.set('X-XSS-Protection', '0');
+    next();
+});
+
+msngr.use(express.urlencoded({ extended: false }));
+msngr.use(express.json());
+
+const stages = ["one", "two", "three"];
+for (let stage of stages) {
+    msngr.get(`/register_${stage}`, (req, res) => {
+        res.render('vuln-register', {stage});
     });
-
-    router.use(express.urlencoded({ extended: false }));
-    router.use(express.json());
-
-    app.use(router);
-
-    app.listen(port);
-
-    return router;
+    msngr.post(`/register_${stage}`, (req, res) => {
+        console.log(`\nPOST /register_${stage}`);
+        console.log(req.body);
+    });
 }
 
-const vulnRouter = createServer(9000);
 
-vulnRouter.get('/', (req, res) => {
+msngr.get('/user/:username', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'vuln-register.html'));
+});
+
+
+msngr.listen(9000, () => {
+    console.log("Vulnerable server is running");
 });
